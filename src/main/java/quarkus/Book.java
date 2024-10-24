@@ -1,18 +1,14 @@
 package quarkus;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-public class Book {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Book extends PanacheEntity {
 
     private  String title;
 
@@ -21,14 +17,6 @@ public class Book {
     private LocalDate pubDate;
 
     private String description;
-
-    public Long getId(){
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
