@@ -1,8 +1,7 @@
 package quarkus.genres;
 
-public record CreateGenreDto(
+public record UpdateGenreDto(
 
         String name
 ) {
-
 }

@@ -17,8 +17,15 @@ import java.util.NoSuchElementException;
 @Path("/genres")
 public class GenreResource {
 
-    @Inject
     private GenreRepository genres;
+
+    private GenreMapper mapper;
+
+    @Inject
+    public GenreResource(GenreRepository genres, GenreMapper mapper) {
+        this.genres = genres;
+        this.mapper = mapper;
+    }
 
     @GET
     public PaginatedResponse<Genre> list(
@@ -36,9 +43,10 @@ public class GenreResource {
 
     @POST
     @Transactional
-    public Response create(Genre genre) {
-        genres.persist(genre);
-        return Response.created(URI.create("/genres/" + genre.getId())).entity(genre).build();
+    public Response create(CreateGenreDto genre) {
+        var entity = mapper.fromCreate(genre);
+        genres.persist(entity);
+        return Response.created(URI.create("/genres/" + entity.getId())).entity(entity).build();
     }
 
     @GET
@@ -52,11 +60,11 @@ public class GenreResource {
     @PUT
     @Path("{id}")
     @Transactional
-    public Genre update(@PathParam("id") Long id, Genre inbox) {
+    public Genre update(@PathParam("id") Long id, UpdateGenreDto inbox) {
         Genre found = genres
                 .findByIdOptional(id)
                 .orElseThrow(() -> new NoSuchElementException("Genre " + id + " not found"));
-        found.setName(inbox.getName());
+        mapper.update(inbox, found);
         genres.persist(found);
         return found;
     }
