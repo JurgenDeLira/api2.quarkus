@@ -6,5 +6,7 @@ public interface GenreMapper {
 
     void update(UpdateGenreDto dto, Genre genre);
 
+    GenreResponseDto present(Genre g);
+
 
 }
