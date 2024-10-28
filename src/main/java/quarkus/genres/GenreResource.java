@@ -23,6 +23,8 @@ public class GenreResource {
 
     private GenreMapper mapper;
 
+    private GenreValidator validator;
+
     @Inject
     public GenreResource(GenreRepository genres, GenreMapper mapper) {
         this.genres = genres;
@@ -45,7 +47,12 @@ public class GenreResource {
 
     @POST
     @Transactional
-    public Response create(@Valid CreateGenreDto genre) {
+    public Response create(CreateGenreDto genre) {
+        var error = this.validator.validateGenre(genre);
+        if (error.isPresent()){
+            var msg = error.get();
+            return Response.status(400).entity(msg).build();
+        }
         var entity = mapper.fromCreate(genre);
         genres.persist(entity);
         var representation = mapper.present(entity);
